@@ -5,8 +5,6 @@ import Head from 'next/head';
 import { Icons } from "../const/icons";
 import { createCallData, EIP712_SAFE_OPERATION_V6_TYPE, getFunctionSelector, SafeAccountV0_2_0 as SafeAccount } from '@morpher-io/dd-abstractionkit';
 import { useAccount, useBalance, useChainId, usePublicClient, useReadContract, useSendTransaction, useSignMessage, useSignTypedData, useWalletClient, useWriteContract } from 'wagmi';
-import SilverCoin from "../../contracts/out/PreciousMetals.sol/SilverCoin.json"
-import PriceOracle from "../../contracts/out/IOracleEntrypoint.sol/IOracleEntrypoint.json"
 
 import NFTFANABI from "../abi/nftfanABI.json"
 
@@ -28,25 +26,13 @@ const Home: NextPage = () => {
 
   const gasBalance = useBalance({ address: smartAccount?.accountAddress as `0x${string}` })
 
-  const goldCoinBalance = useReadContract({
-    abi: SilverCoin.abi,
-    address: process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`,
-    functionName: 'balanceOf',
-    args: [smartAccount?.accountAddress as `0x${string}`],
-  })
+
 
   const { sendTransaction } = useSendTransaction();
 
   const pricePreview = usePreviewAPIPolling("0xa77010d8a18857daea7ece96bedb40730ab5be50d8094d2bd8008926ca492844", 5000);
   const pricePreviewPol = usePreviewAPIPolling("0x9a668d8b2069cae627ac3dff9136de03849d0742ff88edb112e7be6b4663b37d", 5000);
 
-  const dataPrice = useReadContract({
-    address: process.env.NEXT_PUBLIC_ORACLE_ADDRESS as `0x${string}`,
-    abi: PriceOracle.abi,
-    functionName: 'prices',
-    // provider address, dataKey
-    args: [process.env.NEXT_PUBLIC_PROVIDER_ADDRESS as `0x${string}`, keccak256(Buffer.from('MORPHER:COMMODITY_XAG', 'utf-8'))]
-  })
 
   useEffect(() => {
     if (address) {
